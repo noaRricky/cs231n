@@ -9,7 +9,7 @@ class KNearestNeighbor(object):
 
     def train(self, X, y):
         """
-        Train the classifier. For k-nearest neighbors this is just
+        Train the classifier. For k-nearest neighbors this is just 
         memorizing the training data.
 
         Inputs:
@@ -34,7 +34,7 @@ class KNearestNeighbor(object):
 
         Returns:
         - y: A numpy array of shape (num_test,) containing predicted labels for the
-          test data, where y[i] is the predicted label for the test point X[i].
+          test data, where y[i] is the predicted label for the test point X[i].  
         """
         if num_loops == 0:
             dists = self.compute_distances_no_loops(X)
@@ -50,7 +50,7 @@ class KNearestNeighbor(object):
     def compute_distances_two_loops(self, X):
         """
         Compute the distance between each test point in X and each training point
-        in self.X_train using a nested loop over both the training data and the
+        in self.X_train using a nested loop over both the training data and the 
         test data.
 
         Inputs:
@@ -73,6 +73,9 @@ class KNearestNeighbor(object):
                 # not use a loop over dimension.                                    #
                 #####################################################################
                 dists[i, j] = np.sum(np.power(X[i, :] - self.X_train[j, :], 2))
+                #####################################################################
+                #                       END OF YOUR CODE                            #
+                #####################################################################
         return dists
 
     def compute_distances_one_loop(self, X):
@@ -91,10 +94,10 @@ class KNearestNeighbor(object):
             # Compute the l2 distance between the ith test point and all training #
             # points, and store the result in dists[i, :].                        #
             #######################################################################
-            dists[i, :] = np.sum(np.power(self.X_train - X[i, :], 2), axis=1)
-            #########################################################################
-            #                         END OF YOUR CODE                              #
-            #########################################################################
+            dists[i, :] = np.sum(np.power(self.X_train - X[i, :]), axis=1)
+            #######################################################################
+            #                         END OF YOUR CODE                            #
+            #######################################################################
         return dists
 
     def compute_distances_no_loops(self, X):
@@ -119,10 +122,10 @@ class KNearestNeighbor(object):
         # HINT: Try to formulate the l2 distance using matrix multiplication    #
         #       and two broadcast sums.                                         #
         #########################################################################
-        first = np.sum(X ** 2, axis=1)
-        last = np.sum(self.X_train ** 2, axis=1, keepdims=True)
+        first = np.sum(X ** 2, axis=1, keepdims=True)
+        last = np.sum(self.X_train ** 2, axis=1)
         mid = np.dot(X, self.X_train.T)
-        dists = first - 2 * mid + last
+        dists += first - 2 * mid + last
         #########################################################################
         #                         END OF YOUR CODE                              #
         #########################################################################
@@ -139,7 +142,7 @@ class KNearestNeighbor(object):
 
         Returns:
         - y: A numpy array of shape (num_test,) containing predicted labels for the
-          test data, where y[i] is the predicted label for the test point X[i].
+          test data, where y[i] is the predicted label for the test point X[i].  
         """
         num_test = dists.shape[0]
         y_pred = np.zeros(num_test)
@@ -154,8 +157,7 @@ class KNearestNeighbor(object):
             # neighbors. Store these labels in closest_y.                           #
             # Hint: Look up the function numpy.argsort.                             #
             #########################################################################
-            closest_idx = np.argsort(dists[i, :])[:k]
-            closest_y = self.y_train[closest_idx]
+            closest_y = self.y_train[np.argsort(dists[i, :])[:k]]
             #########################################################################
             # TODO:                                                                 #
             # Now that you have found the labels of the k nearest neighbors, you    #
